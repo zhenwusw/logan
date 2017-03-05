@@ -29,11 +29,11 @@ type (
 		// 有系统自动赋值
 		id      int
 		subName string
-		reqMatrix *scheduler.Matrix // 请求矩阵
-		timer *Timer
-		status
-		lock
-		once
+		// reqMatrix *scheduler.Matrix // 请求矩阵
+		// timer *Timer
+		// status
+		// lock
+		// once
 	}
 
 	RuleTree struct {
@@ -43,6 +43,12 @@ type (
 	}
 )
 
+// 获取蜘蛛名称
+func (self *Spider) GetName() string {
+	return "default spider name"
+}
+
+/*
 // 添加自身到蜘蛛菜单
 func (self Spider) Register() *Spider {
 }
@@ -64,10 +70,6 @@ func (self *Spider) GetItemFieldIndex() (index int) {
 // 为指定 Rule 动态追加结果字段名, 并返回索引位置
 // 已存在时返回原来索引位置
 func (self *Spider) UpsertItemField() (index int) {
-}
-
-// 获取蜘蛛名称
-func (self *Spider) GetName() string {
 }
 
 // 获取蜘蛛二级标识名
@@ -141,4 +143,6 @@ func (self *Spider) ReqmatrixInit() *Spider {
 }
 
 // 返回是否作为新的失败请求被添加至队列尾部
-func (self *Spider) DoHistory(req *request.Req)
+func (self *Spider) DoHistory(req *request.Req) {
+}
+*/

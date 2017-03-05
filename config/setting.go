@@ -1,5 +1,6 @@
 package config
 
+/*
 import (
 	"github.com/zhenwusw/logan/common/config"
 	"path/filepath"
@@ -108,4 +109,4 @@ func defaultConfig(iniconf config.Configer) {
 }
 
 func trySet(iniconf config.Configer) {
-}
+}*/

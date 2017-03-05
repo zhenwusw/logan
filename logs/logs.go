@@ -3,8 +3,6 @@ package logs
 import (
 	"github.com/zhenwusw/logan/logs/logs"
 	"io"
-	"path"
-	"github.com/zhenwusw/logan/config"
 )
 
 type (
@@ -33,11 +31,12 @@ type (
 	}
 )
 
+/*
 var Log = func() Logs {
 	p, _ := path.Split(config.LOG)
 	// 不存在目录时创建目录
-	d, err :=
 }()
 
 func (self *mylog) SetOutput(show io.Writer) Logs {
 }
+*/

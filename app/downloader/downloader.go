@@ -10,5 +10,6 @@ import (
 // Function Download need to return Page instance pointer that has request result downloaded from Request
 
 type Downloader interface {
-	Download(spider *spider.Spider, request *request.Request) *spider.Context
+	// Download(spider *spider.Spider, request *request.Request) *spider.Context
+	Download(spider *spider.Spider, request *request.Request)
 }

@@ -1,20 +1,16 @@
 package config
 
-import (
-	"github.com/zhenwusw/logan/runtime/cache"
-	"github.com/zhenwusw/logan/logs/logs"
-	"strings"
-)
-
 // Sofeware Information
 const (
 	VERSION   string = "v0.0.1"
 	AUTHOR    string = "zhenwusw"
 	NAME      string = "Logan"
 	FULL_NAME string = NAME + "_" + VERSION + " (by " + AUTHOR + ") "
-	TAG       string = "logan"
-	ICON_PNG  string = `iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAb3klEQVR42uVdB3gU1dp`
+	// TAG       string = "logan"
+	// ICON_PNG  string = `iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAb3klEQVR42uVdB3gU1dp`
 )
+
+/*
 
 // Default config
 const (
@@ -58,17 +54,17 @@ var (
 func init() {
 	// 主要运行时参数的初始化
 	cache.Task = &cache.AppConf{
-		Mode:           setting.DefaultInt("run::mode", mode),
-		Port:           setting.DefaultInt("run::port", port),
-		Master:         setting.String("run::master"),                         // 服务器(主节点)地址，不含端口
-		ThreadNum:      setting.DefaultInt("run::thread", thread),             // 全局最大并发量
-		Pausetime:      setting.DefaultInt64("run::pause", pause),             // 暂停时长参考/ms(随机: Pausetime/2 ~ Pausetime*2)
+		// Mode:           setting.DefaultInt("run::mode", mode),
+		// Port:           setting.DefaultInt("run::port", port),
+		// Master:         setting.String("run::master"),                         // 服务器(主节点)地址，不含端口
+		// ThreadNum:      setting.DefaultInt("run::thread", thread),             // 全局最大并发量
+		// Pausetime:      setting.DefaultInt64("run::pause", pause),             // 暂停时长参考/ms(随机: Pausetime/2 ~ Pausetime*2)
 		OutType:        setting.String("run::outtype"),                        // 输出方式
-		DockerCap:      setting.DefaultInt("run::dockercap", dockercap),       // 分段转储容器容量
-		Limit:          setting.DefaultInt64("run::limit", limit),             // 采集上限，0为不限，若在规则中设置初始值为LIMIT则为自定义限制，否则默认限制请求数
-		ProxyMinute:    setting.DefaultInt64("run::proxyminute", proxyminute), // 代理IP更换的间隔分钟数
-		SuccessInherit: setting.DefaultBool("run::success", success),          // 继承历史成功记录
-		FailureInherit: setting.DefaultBool("run::failure", failure),          // 继承历史失败记录
+		// DockerCap:      setting.DefaultInt("run::dockercap", dockercap),       // 分段转储容器容量
+		// Limit:          setting.DefaultInt64("run::limit", limit),             // 采集上限，0为不限，若在规则中设置初始值为LIMIT则为自定义限制，否则默认限制请求数
+		// ProxyMinute:    setting.DefaultInt64("run::proxyminute", proxyminute), // 代理IP更换的间隔分钟数
+		// SuccessInherit: setting.DefaultBool("run::success", success),          // 继承历史成功记录
+		// FailureInherit: setting.DefaultBool("run::failure", failure),          // 继承历史失败记录
 	}
 }
 
@@ -97,3 +93,4 @@ func logLevel(l string) int {
 	}
 	return -10
 }
+*/

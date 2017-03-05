@@ -1,11 +1,11 @@
 package spider
 
-import "github.com/henrylee2cn/pholcus/common/pinyin"
+import "github.com/zhenwusw/logan/common/pinyin"
 
 // 蜘蛛种类
 type SpiderSpecies struct {
-	list []*Spider
-	hash map[string]*Spider
+	list   []*Spider
+	hash   map[string]*Spider
 	sorted bool
 }
 
@@ -13,11 +13,6 @@ type SpiderSpecies struct {
 var Species = &SpiderSpecies{
 	list: []*Spider{},
 	hash: map[string]*Spider{},
-}
-
-// 向蜘蛛种类清单添加新种类
-func (self *SpiderSpecies) Add(sp *Spider) *Spider {
-	name := sp.Name
 }
 
 // 获取全部蜘蛛种类
@@ -39,6 +34,12 @@ func (self *SpiderSpecies) Get() []*Spider {
 	return self.list
 }
 
+/*
+// 向蜘蛛种类清单添加新种类
+func (self *SpiderSpecies) Add(sp *Spider) *Spider {
+	name := sp.Name
+}
+
 func (self *SpiderSpecies) GetByName(name string) *Spider {
 	return self.hash[name]
-}
+}*/

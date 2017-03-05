@@ -1,12 +1,6 @@
 package spider
 
-import (
-	"sync"
-	"github.com/zhenwusw/logan/app/downloader/request"
-	"time"
-	"github.com/zhenwusw/logan/logs"
-)
-
+/*
 type Context struct {
 }
 
@@ -152,14 +146,4 @@ func (self *Context) PullItems() (ds []data.DataCell) {
 
 func (self *Context) PullFiles() (fs []data.FileCell) {
 }
-
-
-
-
-
-
-
-
-
-
-
+*/

@@ -1,6 +1,6 @@
 // 结果收集与输出
 package collector
-
+/*
 import (
 	"github.com/zhenwusw/logan/app/pipeline/collector/data"
 	"github.com/zhenwusw/logan/app/spider"
@@ -135,4 +135,4 @@ func (self *Collector) addFileSum(add uint64) {
 
 // 返回报告
 func (self *Collector) Report() {
-}
+}*/

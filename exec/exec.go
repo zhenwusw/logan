@@ -9,6 +9,8 @@ import (
 	"github.com/zhenwusw/logan/runtime/cache"
 	"strings"
 	"github.com/zhenwusw/logan/app"
+	"strconv"
+	"github.com/zhenwusw/logan/runtime/status"
 )
 
 // 运行模式：  ui|web|cmd
@@ -25,8 +27,8 @@ import (
 // 是否继承历史失败记录
 
 var (
-	uiflag *string
-	// modeflag   *int = &status.OFFLINE // lg: 默认为单机
+	uiflag     *string
+	modeflag   *int
 	outputflag *string
 	//portflag           *int
 	//masterflag         *string
@@ -54,8 +56,8 @@ func DefaultRun(uiDefault string) {
 	// 操作界面
 	uiflag = flag.String("_ui", uiDefault, "")
 	flagCommon()
+	cmd.Flag() // 初始化 cmd 相关参数
 	// web.Flag()
-	cmd.Flag()
 	flag.Parse()
 	writeFlag()
 
@@ -64,10 +66,10 @@ func DefaultRun(uiDefault string) {
 
 func flagCommon() {
 	//运行模式
-	//modeflag = flag.Int(
-	//	"a_mode",
-	//	cache.Task.Mode,
-	//	"   <运行模式: ["+strconv.Itoa(status.OFFLINE)+"] 单机    ["+strconv.Itoa(status.SERVER)+"] 服务端    ["+strconv.Itoa(status.CLIENT)+"] 客户端>")
+	modeflag = flag.Int(
+		"a_mode",
+		cache.Task.Mode,
+		"   <运行模式: ["+strconv.Itoa(status.OFFLINE)+"] 单机    ["+strconv.Itoa(status.SERVER)+"] 服务端    ["+strconv.Itoa(status.CLIENT)+"] 客户端>")
 
 	// 输出方式
 	outputflag = flag.String(
@@ -147,7 +149,7 @@ func flagCommon() {
 
 // 参数赋值
 func writeFlag() {
-	// cache.Task.Mode = *modeflag
+	cache.Task.Mode = *modeflag
 	cache.Task.OutType = *outputflag
 	/*cache.Task.Master = *masterflag
 	cache.Task.Port = *portflag

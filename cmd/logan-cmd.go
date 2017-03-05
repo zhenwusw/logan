@@ -19,7 +19,6 @@ func Flag() {
 	flag.String("c ******************************************** only for cmd ******************************************** -c", "", "")
 
 	// 蜘蛛列表
-	/*
 	spiderflag = flag.String(
 		"c_spider",
 		"",
@@ -30,7 +29,6 @@ func Flag() {
 			}
 			return "   <蜘蛛列表: 选择多蜘蛛以 \",\" 间隔>\r\n" + spiderlist
 		}())
-		*/
 
 	// 备注说明
 	flag.String(
@@ -43,7 +41,13 @@ func Flag() {
 // 执行入口
 func Run() {
 	// Init Logic App
-	// run
+	// app.LogicApp.Init(cache.Task.Mode, cache.Task.Port, cache.Task.Master)
+	app.LogicApp.Init(status.OFFLINE, -1, "")
+	//if cache.Task.Mode == status.UNSET {
+	//	return
+	//}
+	// switch app.LogicApp.GetAppConf()
+	run()
 }
 
 // 运行

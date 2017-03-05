@@ -7,6 +7,7 @@ import (
 	"github.com/zhenwusw/logan/app/spider"
 	"github.com/zhenwusw/logan/runtime/cache"
 	"github.com/zhenwusw/logan/runtime/status"
+	"fmt"
 )
 
 type (
@@ -71,13 +72,41 @@ func newLogic() *Logic {
 
 // 使用App前必须进行Init初始化
 func (self *Logic) Init(mode int, port int, master string, w ...io.Writer) App {
-	// 初始化
+	// 配置 AppConf{ Mode, Port, Master}
+	self.AppConf.Mode = mode
+	switch self.AppConf.Mode {
+	case status.OFFLINE:
+		// log something
+		return self
+	default:
+		// log something
+		return self
+	}
 	return self
 }
 
 // 运行任务
 func (self *Logic) Run() {
-	//
+	// 开启报告
+	// 客户端模式
+	self.finish = make(chan bool)
+	// self.finishOnce = sync.Once{}
+	// self.sum[0]
+	// self.setStatus(status.RUN)
+	// defer self.setStatus(status.STOPPED)
+
+	// 任务执行
+	switch self.AppConf.Mode {
+	case status.OFFLINE:
+		self.offline()
+	case status.SERVER:
+		self.server()
+	case status.CLIENT:
+		self.client()
+	default:
+		return
+	}
+	<-self.finish
 }
 
 // Offline 模式下中途终止任务
@@ -177,3 +206,47 @@ func (self *Logic) CountNodes() int {
 // 获取蜘蛛队列接口实例
 func (self *Logic) GetSpiderQueue() crawler.S
 */
+
+// 离线模式运行
+func (self *Logic) offline() {
+	self.exec()
+}
+
+func (self *Logic) server() {
+}
+
+func (self *Logic) client() {
+}
+
+// 开始执行任务
+func (self *Logic) exec() {
+	count := 1
+	// count := self.SpiderQueue.Len()
+	// cache.ResetPageCount()
+	// 刷新输出方式的状态
+	// pipeline.RefreshOutput()
+
+	// 初始化资源队列
+	// scheduler.Init()
+
+	// 设置爬虫队列
+	// crawlerCap := self.CrawlerPool.Reset()
+
+	// 开始计时
+	// cache.StartTime = time.Now()
+
+	// 根据模式选择合理的并发
+	if self.AppConf.Mode == status.OFFLINE {
+		// 可控制执行状态
+		go self.goRun(count)
+	} else {
+		// 保证接收服务端任务的同步
+		// self.goRun(count)
+	}
+}
+
+// 任务执行
+func (self *Logic) goRun(count int) {
+	// 执行任务
+	fmt.Print("app.goRun()... \n")
+}

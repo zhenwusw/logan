@@ -3,6 +3,7 @@ package spider
 import (
 	"github.com/zhenwusw/logan/common/util"
 	"math"
+	"github.com/zhenwusw/logan/runtime/status"
 )
 
 const (
@@ -31,15 +32,20 @@ type (
 		subName string
 		// reqMatrix *scheduler.Matrix // 请求矩阵
 		// timer *Timer
-		// status
+		status int // 执行状态
 		// lock
 		// once
 	}
 
 	RuleTree struct {
+		Root  func(*Context)   // 根节点（执行入口）
+		Trunk map[string]*Rule // 节点散列（执行采集过程）
 	}
 
 	Rule struct {
+		ItemFields []string                                           // 结果字段列表（选填，写上可保证字段顺序）
+		ParseFunc  func(*Context)                                     // 内容解析函数
+		AidFunc    func(*Context, map[string]interface{}) interface{} // 通用辅助函数
 	}
 )
 
@@ -48,11 +54,19 @@ func (self *Spider) GetName() string {
 	return "default spider name"
 }
 
-/*
 // 添加自身到蜘蛛菜单
 func (self Spider) Register() *Spider {
+	self.status = status.STOPPED
+	return Species.Add(&self)
 }
 
+// 安全返回指定规则
+func (self *Spider) GetRule(ruleName string) (*Rule, bool) {
+	rule, found := self.RuleTree.Trunk[ruleName]
+	return rule, found
+}
+
+/*
 // 指定规则的获取结果的字段名列表
 func (self *Spider) GetItemFields(rule *Rule) []string {
 }
@@ -74,10 +88,6 @@ func (self *Spider) UpsertItemField() (index int) {
 
 // 获取蜘蛛二级标识名
 func (self *Spider) GetSubName() string {
-}
-
-// 安全返回指定规则
-func (self *Spider) GetRule() (*Rule, bool) {
 }
 
 // 返回指定规则

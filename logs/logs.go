@@ -3,6 +3,8 @@ package logs
 import (
 	"github.com/zhenwusw/logan/logs/logs"
 	"io"
+	"github.com/zhenwusw/logan/config"
+	"path"
 )
 
 type (
@@ -31,12 +33,21 @@ type (
 	}
 )
 
-/*
 var Log = func() Logs {
 	p, _ := path.Split(config.LOG)
 	// 不存在目录时创建目录
+
+
+	channellen := int64(1024)
+	feedbacklevel := 2
+	// config.LOG_CAP, config.LOG_FEEDBACK_LEVEL
+	ml := &mylog{
+		BeeLogger: logs.NewLogger(channellen, feedbacklevel),
+	}
+	return ml
 }()
 
 func (self *mylog) SetOutput(show io.Writer) Logs {
+	// do the job
+	return self
 }
-*/

@@ -1,12 +1,12 @@
 package exec
 
 import (
-	"os/exec"
 	"github.com/henrylee2cn/pholcus/config"
-	"github.com/zhenwusw/logan/cmd"  // cmd版
-	"os"
-	"os/signal"
 	"github.com/henrylee2cn/pholcus/web"
+	"github.com/zhenwusw/logan/cmd" // cmd版
+	"os"
+	"os/exec"
+	"os/signal"
 )
 
 func run(which string) {

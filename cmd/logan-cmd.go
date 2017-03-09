@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"flag"
-	"strconv"
-	"github.com/zhenwusw/logan/runtime/status"
-	"strings"
-	"github.com/zhenwusw/logan/app/spider"
+	"fmt"
 	"github.com/zhenwusw/logan/app"
+	"github.com/zhenwusw/logan/app/spider"
+	"github.com/zhenwusw/logan/runtime/status"
+	"strconv"
 )
 
 var (
@@ -46,14 +46,25 @@ func Run() {
 	//if cache.Task.Mode == status.UNSET {
 	//	return
 	//}
-	// switch app.LogicApp.GetAppConf()
-	run()
+
+	// 获取全局参数
+	switch app.LogicApp.GetAppConf("Mode").(int) {
+	case status.SERVER:
+	//
+	case status.CLIENT:
+	//
+	default:
+		run()
+	}
 }
 
 // 运行
 func run() {
+	fmt.Printf("...... %v \n", "logan-cmd#run()")
+
 	// 创建蜘蛛队列
 	sps := []*spider.Spider{}
+	/*
 	*spiderflag = strings.TrimSpace(*spiderflag)
 	if *spiderflag == "*" {
 		// aps = app.LogicApp.GetSpiderLib()
@@ -66,6 +77,11 @@ func run() {
 			i, _ := strconv.Atoi(idx)
 			sps = append(sps, app.LogicApp.GetSpiderLib()[i])
 		}
+	}*/
+
+	for _, sp := range app.LogicApp.GetSpiderLib() {
+		sps = append(sps, sp)
 	}
+
 	app.LogicApp.SpiderPrepare(sps).Run()
 }

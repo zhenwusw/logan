@@ -1,6 +1,6 @@
 package collector
 
-/*
+import "fmt"
 
 var (
 	// 全局支持的输出方式
@@ -11,5 +11,5 @@ var (
 
 // 文本数据输出
 func (self *Collector) outputData() {
+	fmt.Printf("... %v", "collector#outputData()")
 }
-*/

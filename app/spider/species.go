@@ -1,8 +1,8 @@
 package spider
 
 import (
-	"github.com/zhenwusw/logan/common/pinyin"
 	"fmt"
+	"github.com/zhenwusw/logan/common/pinyin"
 )
 
 // 蜘蛛种类

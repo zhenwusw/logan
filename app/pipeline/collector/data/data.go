@@ -9,13 +9,13 @@ import "sync"
     Url
     ParentUrl
     DownloadTime
- */
+*/
 
 /* FileCell:
-     RuleName
-     Name
-     Bytes
- */
+   RuleName
+   Name
+   Bytes
+*/
 type (
 	// 数据存储单元
 	DataCell map[string]interface{}
@@ -40,7 +40,7 @@ var (
 func GetDataCell(ruleName string, data map[string]interface{}, url string, parentUrl string, downloadTime string) DataCell {
 	cell := dataCellPool.Get().(DataCell)
 	cell["RuleName"] = ruleName
-	cell["Data"] = data    // 数据存储，key必须与Rule的Fields保持一致
+	cell["Data"] = data // 数据存储，key必须与Rule的Fields保持一致
 	cell["Url"] = url
 	cell["ParentUrl"] = parentUrl
 	cell["DownloadTime"] = downloadTime

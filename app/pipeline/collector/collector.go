@@ -1,12 +1,13 @@
 // 结果收集与输出
 package collector
-/*
+
 import (
+	"fmt"
 	"github.com/zhenwusw/logan/app/pipeline/collector/data"
 	"github.com/zhenwusw/logan/app/spider"
-	"sync"
 	"github.com/zhenwusw/logan/runtime/cache"
-	"fmt"
+	"sync"
+	"sync/atomic"
 )
 
 type Collector struct {
@@ -100,6 +101,9 @@ func (self *Collector) Start() {
 			}()
 			// 只有当收到退出通知并且通道内无数据时，才退出循环
 			for file := range self.FileChan {
+				atomic.AddUint64(&self.fileBatch, 1)
+				self.wait.Add(1)
+				go self.outputFile(file)
 			}
 			close(fileStop)
 		}()
@@ -114,6 +118,12 @@ func (self *Collector) Start() {
 	}()
 }
 
+// 返回报告
+func (self *Collector) Report() {
+	fmt.Printf("... %v", "collector#Report()")
+}
+
+/*
 func (self *Collector) resetDataDocker() {
 }
 
@@ -132,7 +142,4 @@ func (self *Collector) fileSum() uint64 {
 // 更新文件数据总量
 func (self *Collector) addFileSum(add uint64) {
 }
-
-// 返回报告
-func (self *Collector) Report() {
-}*/
+*/

@@ -15,8 +15,8 @@ const (
 	WORK_ROOT string = TAG + "_pkg"
 	// CONFIG         string = WORK_ROOT + "/config.ini"
 	// CACHE_DIR      string = WORK_ROOT + "/cache"
-	LOG string = WORK_ROOT + "/logs/logan.log"
-	// LOG_ASYNC      bool   = true
+	LOG       string = WORK_ROOT + "/logs/logan.log"
+	LOG_ASYNC bool   = true
 	// PHANTOMJS_TEMP string = CACHE_DIR
 	// HISTORY_TAG    string = "history"
 	// HISTORY_DIR    string = WORK_ROOT + "/" + HISTORY_TAG
@@ -41,6 +41,11 @@ var (
 
 	// KAFKA_BORKERS string = setting.DefaultString("kafka::brokers", kafkabrokers) //kafka brokers
 
+	LOG_CAP            int64 = 1024 * 1024
+	LOG_LEVEL          int   = 0
+	LOG_LINEINFO       bool  = true
+	LOG_FEEDBACK_LEVEL int   = 0
+	LOG_CONSOLE_LEVEL  int   = 0
 	// LOG_CAP            int64 = setting.DefaultInt64("log::cap", logcap)          // 日志缓存的容量
 	// LOG_LEVEL          int   = logLevel(setting.String("log::level"))            // 全局日志打印级别（亦是日志文件输出级别）
 	// LOG_CONSOLE_LEVEL  int   = logLevel(setting.String("log::consolelevel"))     // 日志在控制台的显示级别

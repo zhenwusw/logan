@@ -1,12 +1,18 @@
 package spider
 
 import (
-	"sync"
-	"time"
 	"github.com/zhenwusw/logan/app/downloader/request"
-	"net/http"
-	"github.com/henrylee2cn/pholcus/common/goquery"
 	"github.com/zhenwusw/logan/app/pipeline/collector/data"
+	"github.com/zhenwusw/logan/common/goquery"
+	"github.com/zhenwusw/logan/logs"
+	"golang.org/x/net/html/charset"
+	"io"
+	"io/ioutil"
+	"mime"
+	"net/http"
+	"strings"
+	"sync"
+	"fmt"
 )
 
 type Context struct {
@@ -55,6 +61,11 @@ func (self *Context) SetError(err error) {
 	self.err = err
 }
 
+// 从原始请求获取Url，从而保证请求前后的Url完全相等，且中文未被编码。
+func (self *Context) GetUrl() string {
+	return self.Request.Url
+}
+
 //**************************************** Set与Exec类公开方法 *******************************************\\
 // 生成并添加请求至队列
 // Request.Url 与 Request.Rule
@@ -70,7 +81,26 @@ func (self *Context) SetError(err error) {
 // Request.DownloaderID
 // 默认自动填补 Referer
 func (self *Context) AddQueue(req *request.Request) *Context {
-	// do the job
+	// 若已主动终止任务，则崩溃爬虫协程
+	// self.spider.TryPanic()
+
+	err := req.
+		SetSpiderName(self.spider.GetName()).
+		SetEnableCookie(self.spider.GetEnableCookie()).
+		Prepare()
+
+	if err != nil {
+		// logs.Log.Error(err.Error())
+		fmt.Printf(err.Error())
+		return self
+	}
+
+	// 自动设置 Referer
+	if req.GetReferer() == "" && self.Response != nil {
+		req.SetReferer(self.GetUrl())
+	}
+
+	self.spider.RequestPush(req)
 	return self
 }
 
@@ -80,12 +110,14 @@ func (self *Context) JsAddQueue(jreq map[string]interface{}) *Context {
 	return self
 }
 
+/*
+
 // 输出文本结果。
 // item类型为map[int]interface{}时，根据ruleName现有的ItemFields字段进行输出，
 // item类型为map[string]interface{}时，ruleName不存在的ItemFields字段将被自动添加，
 // ruleName为空时默认当前规则。
 func (self *Context) Output(item interface{}, ruleName ...string) {
-	_ruleName, rule, found := self.getRule(_ruleName)
+	// _ruleName, rule, found := self.getRule(_ruleName)
 }
 
 // 输出文件
@@ -120,7 +152,6 @@ func (self *Context) Aid() interface{} {
 // 解析响应流
 // 用 ruleName 指定匹配的 ParseFunc 字段，为空时默认调用 Root()
 func (self *Context) Parse(ruleName ...string) *Context {
-
 }
 
 // 设定自定义配置
@@ -164,11 +195,11 @@ func (self *Context) GetSpider() *Spider {
 // 获取规则树
 func (self *Context) GetRule(ruleName string) (*Rule, bool) {
 	return self.spider.GetRule(ruleName)
-}
+}*/
 
 // 获取指定规则
 func (self *Context) GetRuleName() string {
-	// return self.Request.getRuleName()
+	return self.Request.GetRuleName()
 }
 
 // 获取当前规则名
@@ -195,7 +226,84 @@ func (self *Context) PullItems() (ds []data.DataCell) {
 func (self *Context) PullFiles() (fs []data.FileCell) {
 }*/
 
+// GetHtmlParser returns goquery object binded to target crawl result
+func (self *Context) GetDom() *goquery.Document {
+	if self.dom == nil {
+		self.initDom()
+	}
+	return self.dom
+}
+
 // ******************************** 私有方法 ********************************
+
+// GetHtmlParser returns goquery object binded to target crawl result
+func (self *Context) initDom() *goquery.Document {
+	if self.text == nil {
+		self.initText()
+	}
+	return self.dom
+}
+
+// GetBodyStr returns plain string crawled.
+func (self *Context) initText() {
+	var err error
+
+	// 采用surf内核下载时，尝试自动转码
+	if self.Request.DownloaderID == request.SURF_ID {
+		var contentType, pageEncode string
+		// 优先从响应头读取编码类型
+		contentType = self.Response.Header.Get("Content-Type")
+		if _, params, err := mime.ParseMediaType(contentType); err == nil {
+			if cs, ok := params["charset"]; ok {
+				pageEncode = strings.ToLower(strings.TrimSpace(cs))
+			}
+		}
+		// 响应头未指定编码类型时，从请求头读取
+		if len(pageEncode) == 0 {
+			contentType = self.Request.Header.Get("Content-Type")
+			if _, params, err := mime.ParseMediaType(contentType); err == nil {
+				if cs, ok := params["charset"]; ok {
+					pageEncode = strings.ToLower(strings.TrimSpace(cs))
+				}
+			}
+		}
+
+		switch pageEncode {
+		// 不做转码处理
+		case "utf8", "utf-8", "unicode-1-1-utf-8":
+		default:
+			// 指定了编码类型，但不是utf8时，自动转码为utf8
+			// get converter to utf-8
+			// Charset auto determine. Use golang.org/x/net/html/charset. Get response body and change it to utf-8
+			var destReader io.Reader
+			if len(pageEncode) == 0 {
+				destReader, err = charset.NewReader(self.Response.Body, "")
+			} else {
+				destReader, err = charset.NewReaderLabel(pageEncode, self.Response.Body)
+			}
+
+			if err == nil {
+				self.text, err = ioutil.ReadAll(destReader)
+				if err == nil {
+					self.Response.Body.Close()
+					return
+				} else {
+					logs.Log.Warning(" *     [convert][%v]: %v (ignore transcoding)\n", self.GetUrl(), err)
+				}
+			} else {
+				logs.Log.Warning(" *     [convert][%v]: %v (ignore transcoding)\n", self.GetUrl(), err)
+			}
+		}
+
+	}
+	// 不做转码处理
+	self.text, err = ioutil.ReadAll(self.Response.Body)
+	self.Response.Body.Close()
+	if err != nil {
+		panic(err.Error())
+		return
+	}
+}
 
 // 获取规则
 func (self *Context) getRule(ruleName ...string) (name string, rule *Rule, found bool) {
@@ -210,7 +318,6 @@ func (self *Context) getRule(ruleName ...string) (name string, rule *Rule, found
 	rule, found = self.spider.GetRule(name)
 	return
 }
-
 
 /**
  * 编码类型参考

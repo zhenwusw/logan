@@ -1,22 +1,22 @@
 package cache
 
 import (
-	"time"
 	"runtime"
 	"sync/atomic"
+	"time"
 )
 
 //**************************************任务运行时公共配置****************************************\\
 
 type AppConf struct {
-	Mode           int  // 节点角色
+	Mode int // 节点角色
 	// Port           int  // 主节点端口
 	// Master         string // 服务器（主节点）地址，不含端口
-	// ThreadNum      int    // 全局最大并发量
-	// Pausetime      int64  // 暂停时长参考 /ms
-	OutType        string // 输出方式
-	// DockerCap      int    // 分段转储容器容量
-	// Limit          int64  // 采集上限，0为不限
+	ThreadNum int    // 全局最大并发量
+	Pausetime int64  // 暂停时长参考 /ms
+	OutType   string // 输出方式
+	DockerCap int    // 分段转储容器容量
+	Limit     int64  // 采集上限，0为不限
 	// ProxyMinute    int64  // 代理 IP 更换的间隔分钟数
 	// SuccessInherit bool   // 继承历史成功记录
 	// FailureInherit bool   // 继承历史失败记录
@@ -35,12 +35,12 @@ type Report struct {
 	FileNum    uint64
 	// DataSize
 	// FileSize
-	Time       time.Duration
+	Time time.Duration
 }
 
 var (
 	// 点击开始按钮的时间点
-	StartTime  time.Time
+	StartTime time.Time
 	// 文本数据小结报告
 	ReportChan chan *Report
 	// 请求页面总数[]uint{总数，失败数}

@@ -3,11 +3,15 @@
 package app
 
 import (
-	"io"
+	"fmt"
+	"github.com/zhenwusw/logan/app/crawler"
 	"github.com/zhenwusw/logan/app/spider"
 	"github.com/zhenwusw/logan/runtime/cache"
 	"github.com/zhenwusw/logan/runtime/status"
-	"fmt"
+	"io"
+	"time"
+	"strings"
+	"reflect"
 )
 
 type (
@@ -29,7 +33,7 @@ type (
 		// SetLog(io.Writer) App
 		// LogGoOn() App
 		// LogReset() App
-		// GetAppConf()
+		GetAppConf(k ...string) interface{} // 获取全局参数
 		// SetAppConf() App
 		//
 		// PauseRecover()
@@ -43,9 +47,9 @@ type (
 		*spider.SpiderSpecies // 全部蜘蛛种类
 		status int
 		finish chan bool
-		// crawler.SpiderQueue   // 当前任务的蜘蛛队列
+		crawler.SpiderQueue // 当前任务的蜘蛛队列
 		// *distribute.TaskJar
-		// crawler.CrawlerPool
+		crawler.CrawlerPool // 爬行回收池
 		// teleport.Teleport
 		// sum
 		// takeTime
@@ -67,6 +71,8 @@ func newLogic() *Logic {
 		AppConf:       cache.Task,
 		SpiderSpecies: spider.Species,
 		status:        status.STOPPED,
+		SpiderQueue:   crawler.NewSpiderQueue(),
+		CrawlerPool:   crawler.NewCrawlerPool(),
 	}
 }
 
@@ -74,6 +80,9 @@ func newLogic() *Logic {
 func (self *Logic) Init(mode int, port int, master string, w ...io.Writer) App {
 	// 配置 AppConf{ Mode, Port, Master}
 	self.AppConf.Mode = mode
+	self.SpiderQueue = crawler.NewSpiderQueue()
+	self.CrawlerPool = crawler.NewCrawlerPool()
+
 	switch self.AppConf.Mode {
 	case status.OFFLINE:
 		// log something
@@ -87,6 +96,8 @@ func (self *Logic) Init(mode int, port int, master string, w ...io.Writer) App {
 
 // 运行任务
 func (self *Logic) Run() {
+	fmt.Printf("...... %v \n", "app#Run()")
+
 	// 开启报告
 	// 客户端模式
 	self.finish = make(chan bool)
@@ -133,6 +144,21 @@ func (self *Logic) IsStopped() bool {
 // 已被显式赋值过的spider将不再重新分配Keyin
 // client模式下不调用该方法
 func (self *Logic) SpiderPrepare(original []*spider.Spider) App {
+	self.SpiderQueue.Reset()
+	// 遍历任务
+	for _, sp := range original {
+		spcopy := sp.Copy()
+		spcopy.SetPausetime(self.AppConf.Pausetime)
+		if spcopy.GetLimit() == spider.LIMIT {
+			spcopy.SetLimit(self.AppConf.Limit)
+		} else {
+			spcopy.SetLimit(-1 * self.AppConf.Limit)
+		}
+		self.SpiderQueue.Add(spcopy)
+	}
+
+	// 遍历自定义配置
+	// self.SpiderQueue.AddKeyins(self.AppConf.Keyins)
 	return self
 }
 
@@ -145,6 +171,22 @@ func (self *Logic) GetSpiderLib() []*spider.Spider {
 func (self *Logic) GetOutputLib() []string {
 	return make([]string, 10)
 	// return collector.DataOutputLib
+}
+
+// 获取全局参数
+func (self *Logic) GetAppConf(k ...string) interface{} {
+	defer func() {
+		if err := recover(); err != nil {
+			// logs.Log.Error()
+			fmt.Printf("%v", err)
+		}
+	}()
+	if len(k) == 0 {
+		return self.AppConf
+	}
+	key := strings.Title(k[0])
+	acv := reflect.ValueOf(self.AppConf).Elem()
+	return acv.FieldByName(key).Interface()
 }
 
 // 切换运行模式时使用
@@ -162,10 +204,6 @@ func (self *Logic) LogReset() App {
 
 // 继续log打印
 func (self *Logic) LogGoOn() App {
-}
-
-// 获取全局参数
-func (self *Logic) GetAppConf(k ...string) interface{} {
 }
 
 // 设置全局参数
@@ -220,6 +258,8 @@ func (self *Logic) client() {
 
 // 开始执行任务
 func (self *Logic) exec() {
+	fmt.Printf("...... %v \n", "app#exec()")
+
 	count := 1
 	// count := self.SpiderQueue.Len()
 	// cache.ResetPageCount()
@@ -230,7 +270,8 @@ func (self *Logic) exec() {
 	// scheduler.Init()
 
 	// 设置爬虫队列
-	// crawlerCap := self.CrawlerPool.Reset()
+	crawlerCap := self.CrawlerPool.Reset(count)
+	fmt.Printf(" *     采集引擎池容量为 %v\n", crawlerCap)
 
 	// 开始计时
 	// cache.StartTime = time.Now()
@@ -247,6 +288,44 @@ func (self *Logic) exec() {
 
 // 任务执行
 func (self *Logic) goRun(count int) {
+	fmt.Printf("...... %v \n", "app#goRun()")
+
 	// 执行任务
-	fmt.Print("app.goRun()... \n")
+	var i int
+	for i = 0; i < count && self.status != status.STOP; i++ {
+	pause:
+		if self.IsPause() {
+			time.Sleep(time.Second)
+			goto pause
+		}
+		// 从爬行队列取出空闲蜘蛛，并发执行
+		c := self.CrawlerPool.Use()
+		if c != nil {
+			go func(i int, c crawler.Crawler) {
+				// 执行并返回结果消息
+				c.Init(self.SpiderQueue.GetByIndex(i)).Run()
+				// self.RWMutex.RLock()
+				if self.status != status.STOP {
+					self.CrawlerPool.Free(c)
+				}
+				// self.RWMutext.RUnlock()
+				// 任务结束后回收改蜘蛛
+			}(i, c)
+		}
+	}
+	// 监控结束任务
+	for ii := 0; ii < i; ii++ {
+		s := <-cache.ReportChan
+		if (s.DataNum == 0) && (s.FileNum == 0) {
+			// ...
+		}
+		// self.sum[0] += s.DataNum
+		// self.sum[1] += s.FileNum
+	}
+
+	// 单机模式并发运行，需要标记任务结束
+	if self.AppConf.Mode == status.OFFLINE {
+		// self.LogRest()
+		// self.finishOnce.Do(func() { close(self.finish) })
+	}
 }

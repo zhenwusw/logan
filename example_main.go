@@ -1,7 +1,10 @@
 package main
 
-import "exec"
+import (
+	"github.com/zhenwusw/logan/exec"
+	_ "github.com/zhenwusw/logan/sites"
+)
 
 func main() {
-	// exec.DefaultRun("web")
+	exec.DefaultRun("cmd")
 }

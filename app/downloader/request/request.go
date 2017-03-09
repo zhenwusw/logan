@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // Request represents object waiting for being crawled.
@@ -13,7 +14,7 @@ type Request struct {
 	Rule   string      // 用于解析响应的规则节点名，必须设置
 	Method string      // GET POST POST-M HEAD
 	Header http.Header // 请求头信息
-	// EnableCookie  bool
+	EnableCookie  bool
 	// PostData      string
 	// DialTimeout   time.Duration
 	// ConnTimeout   time.Duration
@@ -22,7 +23,7 @@ type Request struct {
 	// redirectTimes int
 	// Temp       Temp
 	// TempIsJson map[string]bool
-	// Priority      int
+	Priority int
 	// Reloadable    bool
 
 	// Surfer下载器内核ID
@@ -58,7 +59,7 @@ const (
 
 	Request.Method默认为GET方法;
 	Request.DownloaderID指定下载器ID，0为默认的Surf高并发下载器，功能完备，1为PhantomJS下载器，特点破防力强，速度慢，低并发。
- */
+*/
 
 func (self *Request) Prepare() error {
 	// 确保url正确，且和Response中Url字符串相等
@@ -154,19 +155,74 @@ func (self *Request) SetReferer(referer string) *Request {
 	return self
 }
 
-/*
+func (self *Request) GetRuleName() string {
+	return self.Rule
+}
+
+func (self *Request) GetDownloaderID() int {
+	return self.DownloaderID
+}
+
 func (self *Request) GetPostData() string {
-	return self.PostData
+	return "postdata"
+	// return self.PostData
 }
 
 func (self *Request) GetEnableCookie() bool {
-	return self.EnableCookie
+	return true
+	// return self.EnableCookie
+}
+
+func (self *Request) GetDialTimeout() time.Duration {
+	return 2 * time.Minute
+	// return self.DialTimeout
+}
+
+func (self *Request) GetConnTimeout() time.Duration {
+	return 2 * time.Minute
+	// return self.ConnTimeout
+}
+
+func (self *Request) GetTryTimes() int {
+	return 3
+	// return self.TryTimes
+}
+
+func (self *Request) GetRetryPause() time.Duration {
+	return 10 * time.Second
+	// return self.RetryPause
+}
+
+func (self *Request) GetProxy() string {
+	return ""
+	// return self.proxy
+}
+
+func (self *Request) GetRedirectTimes() int {
+	return 3
+	// return self.RedirectTimes
+}
+
+func (self *Request) GetPriority() int {
+	return self.Priority
+}
+
+func (self *Request) SetPriority(priority int) *Request {
+	self.Priority = priority
+	return self
+}
+
+func (self *Request) SetSpiderName(spiderName string) *Request {
+	self.Spider = spiderName
+	return self
 }
 
 func (self *Request) SetEnableCookie(enableCookie bool) *Request {
 	self.EnableCookie = enableCookie
 	return self
 }
+
+/*
 
 func (self *Request) GetCookies() string {
 	return self.Header.Get("Cookie")
@@ -177,37 +233,9 @@ func (self *Request) SetCookies(cookie string) *Request {
 	return self
 }
 
-func (self *Request) GetDialTimeout() time.Duration {
-	return self.DialTimeout
-}
-
-func (self *Request) GetConnTimeout() time.Duration {
-	return self.ConnTimeout
-}
-
-func (self *Request) GetTryTimes() int {
-	return self.TryTimes
-}
-
-func (self *Request) GetRetryPause() time.Duration {
-	return self.RetryPause
-}
-
-func (self *Request) GetProxy() string {
-	return self.proxy
-}
-
 func (self *Request) SetProxy(proxy string) *Request {
 	self.proxy = proxy
 	return self
-}
-
-func (self *Request) GetRedirectTimes() int {
-	return self.RedirectTimes
-}
-
-func (self *Request) GetRuleName() string {
-	return self.Rule
 }
 
 func (self *Request) SetRuleName(ruleName string) *Request {
@@ -218,11 +246,7 @@ func (self *Request) SetRuleName(ruleName string) *Request {
 func (self *Request) GetSpiderName() string {
 	return self.Spider
 }
-
-func (self *Request) SetSpiderName(spiderName string) *Request {
-	self.Spider = spiderName
-	return self
-}*/
+*/
 
 /*
 func (self *Request) IsReloadable() bool {
@@ -248,19 +272,6 @@ func (self *Request) SetTemp() *Request {
 func (self *Request) SetTemps() *Request {
 }
 
-
-func (self *Request) GetPriority() int {
-	return self.Priority
-}
-
-func (self *Request) SetPriority(priority int) *Request {
-	self.Priority = priority
-	return self
-}
-
-func (self *Request) GetDownloaderID() int {
-	return self.DownloaderID
-}
 
 func (self *Request) SetDownloaderID(id int) *Request {
 	self.DownloaderID = id

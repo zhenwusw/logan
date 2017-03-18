@@ -1,0 +1,13 @@
+{
+    "dependencies": {
+        "github.com/PuerkitoBio/goquery": {
+            "branch": "master"
+        },
+        "github.com/andybalholm/cascadia": {
+            "branch": "master"
+        },
+        "github.com/henrylee2cn/pholcus": {
+            "branch": "master"
+        }
+    }
+}

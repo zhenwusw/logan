@@ -1,0 +1,9 @@
+*.exe
+*.rar
+*.sublime-project
+*.sublime-workspace
+pholcus_pkg/cache
+pholcus_pkg/file_out
+pholcus_pkg/history
+pholcus_pkg/logs
+pholcus_pkg/text_out

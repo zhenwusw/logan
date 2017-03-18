@@ -1,0 +1,235 @@
+{
+    "memo": "6a9e703345070980cea2e0f6b3062fcaf5f7570746cee213fcd7a845fbc1219d",
+    "projects": [
+        {
+            "name": "github.com/PuerkitoBio/goquery",
+            "branch": "master",
+            "revision": "e1271ee34c6a305e38566ecd27ae374944907ee9",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/Shopify/sarama",
+            "version": "v1.11.0",
+            "revision": "0fb560e5f7fbcaee2f75e3c34174320709f69944",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/andybalholm/cascadia",
+            "branch": "master",
+            "revision": "349dd0209470eabd9514242c688c403c0926d266",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/davecgh/go-spew",
+            "version": "v1.1.0",
+            "revision": "a7a0063072ed89d04285d3d3362aa590ed9f7878",
+            "packages": [
+                "spew"
+            ]
+        },
+        {
+            "name": "github.com/eapache/go-resiliency",
+            "version": "v1.0.0",
+            "revision": "6800482f2c813e689c88b7ed3282262385011890",
+            "packages": [
+                "breaker"
+            ]
+        },
+        {
+            "name": "github.com/eapache/go-xerial-snappy",
+            "branch": "master",
+            "revision": "bb955e01b9346ac19dc29eb16586c90ded99a98c",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/eapache/queue",
+            "version": "v1.0.2",
+            "revision": "ded5959c0d4e360646dc9e9908cff48666781367",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/elazarl/go-bindata-assetfs",
+            "branch": "master",
+            "revision": "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/go-sql-driver/mysql",
+            "branch": "master",
+            "revision": "2e00b5cd70399450106cec6431c2e2ce3cae5034",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/golang/snappy",
+            "branch": "master",
+            "revision": "553a641470496b2327abcac10b36396bd98e45c9",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/henrylee2cn/pholcus",
+            "branch": "master",
+            "revision": "2aed3f17391b8e712238a23653b44e4dff34b0b0",
+            "packages": [
+                "app",
+                "app/aid/history",
+                "app/aid/proxy",
+                "app/crawler",
+                "app/distribute",
+                "app/downloader",
+                "app/downloader/request",
+                "app/downloader/surfer",
+                "app/downloader/surfer/agent",
+                "app/pipeline",
+                "app/pipeline/collector",
+                "app/pipeline/collector/data",
+                "app/scheduler",
+                "app/spider",
+                "common/bytes",
+                "common/config",
+                "common/goquery",
+                "common/kafka",
+                "common/mgo",
+                "common/mysql",
+                "common/ping",
+                "common/pinyin",
+                "common/pool",
+                "common/session",
+                "common/util",
+                "common/websocket",
+                "common/xlsx",
+                "config",
+                "logs",
+                "logs/logs",
+                "runtime/cache",
+                "runtime/status",
+                "web"
+            ]
+        },
+        {
+            "name": "github.com/henrylee2cn/teleport",
+            "version": "v1.0",
+            "revision": "1ce8b1f841ac545fed235cd1aabed3c4894d6661",
+            "packages": [
+                ".",
+                "debug"
+            ]
+        },
+        {
+            "name": "github.com/klauspost/crc32",
+            "version": "v1.1",
+            "revision": "cb6bfca970f6908083f26f39a79009d608efd5cd",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/pierrec/lz4",
+            "branch": "master",
+            "revision": "90290f74b1b4d9c097f0a3b3c7eba2ef3875c699",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/pierrec/xxHash",
+            "version": "v0.1.1",
+            "revision": "f04d8931c4dcc407bf3db7cb16a10e620c39c8bc",
+            "packages": [
+                "xxHash32"
+            ]
+        },
+        {
+            "name": "github.com/rcrowley/go-metrics",
+            "branch": "master",
+            "revision": "1f30fe9094a513ce4c700b9a54458bbb0c96996c",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/robertkrimen/otto",
+            "branch": "master",
+            "revision": "1861f2408b93febb6dca3e39483fa6fe63d6e70f",
+            "packages": [
+                ".",
+                "ast",
+                "dbg",
+                "file",
+                "parser",
+                "registry",
+                "token"
+            ]
+        },
+        {
+            "name": "golang.org/x/net",
+            "branch": "master",
+            "revision": "a6577fac2d73be281a500b310739095313165611",
+            "packages": [
+                "html",
+                "html/atom",
+                "html/charset"
+            ]
+        },
+        {
+            "name": "golang.org/x/text",
+            "branch": "master",
+            "revision": "f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd",
+            "packages": [
+                "encoding",
+                "encoding/charmap",
+                "encoding/htmlindex",
+                "encoding/internal",
+                "encoding/internal/identifier",
+                "encoding/japanese",
+                "encoding/korean",
+                "encoding/simplifiedchinese",
+                "encoding/traditionalchinese",
+                "encoding/unicode",
+                "internal/gen",
+                "internal/tag",
+                "internal/utf8internal",
+                "language",
+                "runes",
+                "transform",
+                "unicode/cldr"
+            ]
+        },
+        {
+            "name": "gopkg.in/mgo.v2",
+            "branch": "v2",
+            "revision": "3f83fa5005286a7fe593b055f0d7771a7dce4655",
+            "packages": [
+                ".",
+                "bson",
+                "internal/json",
+                "internal/sasl",
+                "internal/scram"
+            ]
+        },
+        {
+            "name": "gopkg.in/sourcemap.v1",
+            "version": "v1.0.5",
+            "revision": "6e83acea0053641eff084973fee085f0c193c61a",
+            "packages": [
+                ".",
+                "base64vlq"
+            ]
+        }
+    ]
+}

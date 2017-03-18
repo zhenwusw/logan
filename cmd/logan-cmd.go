@@ -60,7 +60,7 @@ func Run() {
 
 // 运行
 func run() {
-	fmt.Printf("...... %v \n", "logan-cmd#run()")
+	fmt.Printf("...... logan-cmd#run() \n")
 
 	// 创建蜘蛛队列
 	sps := []*spider.Spider{}
@@ -81,6 +81,7 @@ func run() {
 
 	for _, sp := range app.LogicApp.GetSpiderLib() {
 		sps = append(sps, sp)
+		fmt.Printf("...... logan-cmd#run appends spider %v\n", sp.Name)
 	}
 
 	app.LogicApp.SpiderPrepare(sps).Run()

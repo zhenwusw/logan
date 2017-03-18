@@ -222,6 +222,11 @@ func (self *Request) SetEnableCookie(enableCookie bool) *Request {
 	return self
 }
 
+func (self *Request) SetRuleName(ruleName string) *Request {
+	self.Rule = ruleName
+	return self
+}
+
 /*
 
 func (self *Request) GetCookies() string {
@@ -235,11 +240,6 @@ func (self *Request) SetCookies(cookie string) *Request {
 
 func (self *Request) SetProxy(proxy string) *Request {
 	self.proxy = proxy
-	return self
-}
-
-func (self *Request) SetRuleName(ruleName string) *Request {
-	self.Rule = ruleName
 	return self
 }
 

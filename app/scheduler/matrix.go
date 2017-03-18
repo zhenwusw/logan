@@ -8,6 +8,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+	"fmt"
 )
 
 // 一个 Spider 实例的请求矩阵
@@ -41,6 +42,8 @@ func newMatrix(spiderName, spiderSubName string, maxPage int64) *Matrix {
 
 // 添加请求到队列，并发安全
 func (self *Matrix) Push(req *request.Request) {
+	fmt.Printf("...... matrix#Push() %v \n", req.Url)
+
 	// 禁止并发，降低请求积存量
 	self.Lock()
 	defer self.Unlock()
@@ -82,6 +85,7 @@ func (self *Matrix) Push(req *request.Request) {
 		sort.Ints(self.priorities) // 从小到大
 		self.reqs[priority] = []*request.Request{}
 	}
+	// fmt.Printf("...... matrix#Push priorities %v \n", self.priorities)
 
 	// 添加请求到队列
 	self.reqs[priority] = append(self.reqs[priority], req)
@@ -99,7 +103,7 @@ func (self *Matrix) Pull() (req *request.Request) {
 	}
 
 	// 按优先级从高到低取出请求
-	for i := len(self.reqs); i >= 0; i-- {
+	for i := len(self.reqs) - 1; i >= 0; i-- {
 		idx := self.priorities[i]
 		if len(self.reqs[idx]) > 0 {
 			req = self.reqs[idx][0]
@@ -119,6 +123,7 @@ func (self *Matrix) Use() {
 	defer func() {
 		recover()
 	}()
+	fmt.Printf("...... matrix#Use(): \n")
 	sdl.count <- true
 	atomic.AddInt32(&self.resCount, 1)
 }

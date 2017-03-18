@@ -5,6 +5,8 @@ import (
 	"github.com/zhenwusw/logan/runtime/cache"
 	"github.com/zhenwusw/logan/runtime/status"
 	"sync"
+	"time"
+	"fmt"
 )
 
 // 调度器
@@ -26,8 +28,10 @@ var sdl = &scheduler{
 
 func Init() {
 	for sdl.proxy == nil {
+		time.Sleep(100 * time.Millisecond)
 	}
 	sdl.matrices = []*Matrix{}
+	fmt.Printf("...... scheduler#Init() count %d: \n", cache.Task.ThreadNum)
 	sdl.count = make(chan bool, cache.Task.ThreadNum)
 
 	//if cache.Task.ProxyMinute > 0 {
@@ -36,6 +40,7 @@ func Init() {
 	//	sdl.useProxy = false
 	//	logs.Log.Informational()
 	//}
+
 	sdl.status = status.RUN
 }
 

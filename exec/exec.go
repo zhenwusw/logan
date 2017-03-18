@@ -34,7 +34,7 @@ var (
 	//masterflag         *string
 	//keyinsflag         *string
 	//limitflag          *int64
-	//threadflag         *int
+	threadflag         *int
 	//pauseflag          *int64
 	//proxyflag          *int64
 	//dockerflag         *int
@@ -83,6 +83,12 @@ func flagCommon() {
 			return "   <输出方式: > " + strings.TrimRight(outputlib, " ")
 		}())
 
+	// 并发协程数
+	threadflag = flag.Int(
+		"a_thread",
+		20, // cache.Task.ThreadNum,
+		"   <并发协程> [1~99999]")
+
 	/*
 		//端口号，非单机模式填写
 		portflag = flag.Int(
@@ -108,12 +114,6 @@ func flagCommon() {
 			cache.Task.Limit,
 			"   <采集上限（默认限制URL数）> [>=0]")
 
-
-		// 并发协程数
-		threadflag = flag.Int(
-			"a_thread",
-			cache.Task.ThreadNum,
-			"   <并发协程> [1~99999]")
 
 		// 平均暂停时间
 		pauseflag = flag.Int64(
@@ -151,11 +151,11 @@ func flagCommon() {
 func writeFlag() {
 	cache.Task.Mode = *modeflag
 	cache.Task.OutType = *outputflag
+	cache.Task.ThreadNum = *threadflag
 	/*cache.Task.Master = *masterflag
 	cache.Task.Port = *portflag
 	cache.Task.Keyins = *keyinsflag
 	cache.Task.Limit = *limitflag
-	cache.Task.ThreadNum = *threadflag
 	cache.Task.Pausetime = *pauseflag
 	cache.Task.ProxyMinute = *proxyflag
 	cache.Task.DockerCap = *dockerflag

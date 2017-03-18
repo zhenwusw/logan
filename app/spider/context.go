@@ -48,7 +48,15 @@ func GetContext(sp *Spider, req *request.Request) *Context {
 }
 
 func PutContext(ctx *Context) {
-	// ctx.items = ctx
+	ctx.items = ctx.items[:0] // clear items
+	ctx.files = ctx.files[:0] // clear files
+	ctx.spider = nil
+	ctx.Request = nil
+	ctx.Response = nil
+	ctx.text = nil
+	ctx.dom = nil
+	ctx.err = nil
+	contextPool.Put(ctx)
 }
 
 func (self *Context) SetResponse(resp *http.Response) *Context {
@@ -81,6 +89,7 @@ func (self *Context) GetUrl() string {
 // Request.DownloaderID
 // 默认自动填补 Referer
 func (self *Context) AddQueue(req *request.Request) *Context {
+	fmt.Printf("...... context#AddQueue %v \n", req.Url)
 	// 若已主动终止任务，则崩溃爬虫协程
 	// self.spider.TryPanic()
 
@@ -107,6 +116,35 @@ func (self *Context) AddQueue(req *request.Request) *Context {
 // 用于动态规则添加请求。
 func (self *Context) JsAddQueue(jreq map[string]interface{}) *Context {
 	// do the job
+	return self
+}
+
+// 获取下载错误
+func (self *Context) GetError() error {
+	// 若已主动终止任务，则奔溃爬虫协程
+	self.spider.tryPanic()
+	return self.err
+}
+
+// 解析响应流
+// 用 ruleName 指定匹配的 ParseFunc 字段，为空时默认调用 Root()
+func (self *Context) Parse(ruleName ...string) *Context {
+	// 若已主动终止任务，则奔溃爬虫协程
+	self.spider.tryPanic()
+
+	_rulename, rule, found := self.getRule(ruleName...)
+	if self.Response != nil {
+		self.Request.SetRuleName(_rulename)
+	}
+	if !found {
+		self.spider.RuleTree.Root(self)
+		return self
+	}
+	if rule.ParseFunc == nil {
+		// logs.Log.Error("蜘蛛 %s 的规则 %s 未定义ParseFunc", self.spider.GetName(), ruleName[0])
+		return self
+	}
+	rule.ParseFunc(self)
 	return self
 }
 
@@ -149,11 +187,6 @@ func (self *Context) UpsertItemField(field string, ruleName ...string) (index in
 func (self *Context) Aid() interface{} {
 }
 
-// 解析响应流
-// 用 ruleName 指定匹配的 ParseFunc 字段，为空时默认调用 Root()
-func (self *Context) Parse(ruleName ...string) *Context {
-}
-
 // 设定自定义配置
 func (self *Context) SetKeyin(keyin string) *Context {
 }
@@ -179,10 +212,6 @@ func (self *Context) ResetText(body string) *Context {
 }
 
 //**************************************** Get 类公开方法 *******************************************\\
-
-// 获取下载错误
-func (self *Context) GetError() error {
-}
 
 // 获取日志接口实例
 func (self *Context) Log() logs.Logs {
@@ -219,12 +248,22 @@ func (self *Context) GetRuleName() string {
 
 // 由结果字段名获取索引下标，不存在时索引为-1，
 // 若ruleName为空，默认为当前规则。
-/*
+
 func (self *Context) PullItems() (ds []data.DataCell) {
+	self.Lock()
+	ds = self.items
+	self.items = []data.DataCell{}
+	self.Unlock()
+	return
 }
 
 func (self *Context) PullFiles() (fs []data.FileCell) {
-}*/
+	self.Lock()
+	fs = self.files
+	self.files = []data.FileCell{}
+	self.Unlock()
+	return
+}
 
 // GetHtmlParser returns goquery object binded to target crawl result
 func (self *Context) GetDom() *goquery.Document {

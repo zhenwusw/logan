@@ -12,6 +12,7 @@ import (
 	"time"
 	"strings"
 	"reflect"
+	"github.com/zhenwusw/logan/app/scheduler"
 )
 
 type (
@@ -83,6 +84,7 @@ func (self *Logic) Init(mode int, port int, master string, w ...io.Writer) App {
 	self.SpiderQueue = crawler.NewSpiderQueue()
 	self.CrawlerPool = crawler.NewCrawlerPool()
 
+	fmt.Printf("...... app#Init() Mode|SpiderQueue|CrawlerPool \n")
 	switch self.AppConf.Mode {
 	case status.OFFLINE:
 		// log something
@@ -267,7 +269,7 @@ func (self *Logic) exec() {
 	// pipeline.RefreshOutput()
 
 	// 初始化资源队列
-	// scheduler.Init()
+	scheduler.Init()
 
 	// 设置爬虫队列
 	crawlerCap := self.CrawlerPool.Reset(count)
@@ -300,6 +302,8 @@ func (self *Logic) goRun(count int) {
 		}
 		// 从爬行队列取出空闲蜘蛛，并发执行
 		c := self.CrawlerPool.Use()
+		fmt.Printf("...... app#goRun() fetch crawler from pool %v\n", c)
+
 		if c != nil {
 			go func(i int, c crawler.Crawler) {
 				// 执行并返回结果消息

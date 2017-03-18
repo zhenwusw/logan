@@ -219,6 +219,12 @@ func (self *Spider) GetEnableCookie() bool {
 	return self.EnableCookie
 }
 
+// 若已主动终止任务，则奔溃爬虫协程
+func (self *Spider) tryPanic() {
+	if self.IsStopping() {
+		panic(FORCED_STOP)
+	}
+}
 
 /*
 // 指定规则的获取结果的字段名列表
